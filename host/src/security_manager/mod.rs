@@ -728,7 +728,7 @@ impl<const BOND_COUNT: usize> SecurityManager<BOND_COUNT> {
             .borrow()
             .as_ref()
             .map(|x| x.timeout_at())
-            .unwrap_or(Instant::now() + constants::TIMEOUT_DISABLE);
+            .unwrap_or(Instant::MAX /*no timeout*/);
         // try to pop an event from the channel
         poll_fn(|cx| self.events.poll_receive(cx)).with_deadline(deadline)
     }

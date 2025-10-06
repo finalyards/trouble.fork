@@ -75,8 +75,8 @@ pub mod prelude {
     pub use bt_hci::param::{AddrKind, BdAddr, LeConnRole as Role, PhyKind, PhyMask};
     pub use bt_hci::transport::SerialTransport;
     pub use bt_hci::uuid::*;
-    #[cfg(feature = "derive")]
-    pub use heapless::String as HeaplessString;
+    //#[cfg(feature = "derive")]
+    //pub use heapless::String as HeaplessString;
     #[cfg(feature = "derive")]
     pub use trouble_host_macros::*;
 
@@ -436,14 +436,14 @@ pub trait Controller:
     + ControllerCmdAsync<LeCreateConn>
     + ControllerCmdSync<LeClearFilterAcceptList>
     + ControllerCmdSync<LeAddDeviceToFilterAcceptList>
-    + for<'t> ControllerCmdSync<LeSetAdvEnable>
+    + ControllerCmdSync<LeSetAdvEnable>
     + for<'t> ControllerCmdSync<LeSetExtAdvEnable<'t>>
     + for<'t> ControllerCmdSync<HostNumberOfCompletedPackets<'t>>
     + ControllerCmdSync<LeReadBufferSize>
-    + for<'t> ControllerCmdSync<LeSetAdvData>
+    + ControllerCmdSync<LeSetAdvData>
     + ControllerCmdSync<LeSetAdvParams>
-    + for<'t> ControllerCmdSync<LeSetAdvEnable>
-    + for<'t> ControllerCmdSync<LeSetScanResponseData>
+    + ControllerCmdSync<LeSetAdvEnable>
+    + ControllerCmdSync<LeSetScanResponseData>
     + ControllerCmdSync<LeLongTermKeyRequestReply>
     + ControllerCmdAsync<LeEnableEncryption>
     + ControllerCmdSync<ReadBdAddr>
@@ -471,14 +471,14 @@ impl<
             + ControllerCmdSync<LeSetExtScanEnable>
             + ControllerCmdSync<LeCreateConnCancel>
             + ControllerCmdAsync<LeCreateConn>
-            + for<'t> ControllerCmdSync<LeSetAdvEnable>
+            + ControllerCmdSync<LeSetAdvEnable>
             + for<'t> ControllerCmdSync<LeSetExtAdvEnable<'t>>
             + for<'t> ControllerCmdSync<HostNumberOfCompletedPackets<'t>>
             + ControllerCmdSync<LeReadBufferSize>
-            + for<'t> ControllerCmdSync<LeSetAdvData>
+            + ControllerCmdSync<LeSetAdvData>
             + ControllerCmdSync<LeSetAdvParams>
-            + for<'t> ControllerCmdSync<LeSetAdvEnable>
-            + for<'t> ControllerCmdSync<LeSetScanResponseData>
+            + ControllerCmdSync<LeSetAdvEnable>
+            + ControllerCmdSync<LeSetScanResponseData>
             + ControllerCmdSync<LeLongTermKeyRequestReply>
             + ControllerCmdAsync<LeEnableEncryption>
             + ControllerCmdSync<ReadBdAddr>,
