@@ -75,8 +75,6 @@ pub mod prelude {
     pub use bt_hci::param::{AddrKind, BdAddr, LeConnRole as Role, PhyKind, PhyMask};
     pub use bt_hci::transport::SerialTransport;
     pub use bt_hci::uuid::*;
-    //#[cfg(feature = "derive")]
-    //pub use heapless::String as HeaplessString;
     #[cfg(feature = "derive")]
     pub use trouble_host_macros::*;
 

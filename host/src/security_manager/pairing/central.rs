@@ -371,7 +371,7 @@ impl Pairing {
                     }
                 }
                 (Step::WaitingPairingResponse(x), Command::SecurityRequest) => {
-                    // SM test spec SM/CEN/PIS/BV-03-C, security requests while waiting for pairing respsonse shall be ignored
+                    // SM test spec SM/CEN/PIS/BV-03-C, security requests while waiting for pairing response shall be ignored
                     Step::WaitingPairingResponse(x)
                 }
                 (Step::WaitingPairingResponse(_), Command::PairingResponse) => {

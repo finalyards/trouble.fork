@@ -52,8 +52,6 @@ env_logger = "0.11"
 critical-section = { version = "1", features = ["std"] }  # needed for CI builds
 rand = "0.8.5"
 rand_core = { version = "0.6", features = ["getrandom"] }
-#heapless = "0.9"
-#embassy-executor = { version = "0.9", features = ["arch-std", "executor-thread"]}
 embassy-time = { version = "0.5", features = ["std", "generic-queue-8"] }
 
 [features]
