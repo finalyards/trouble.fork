@@ -24,7 +24,7 @@ use crate::prelude::{AttributeServer, GattConnection};
 #[cfg(feature = "security")]
 use crate::security_manager::{BondInformation, PassKey};
 #[cfg(feature = "connection-params-update")]
-use crate::types::l2cap::{ConnParamUpdateReq, ConnParamUpdateRes};
+use crate::types::l2cap::ConnParamUpdateRes;
 use crate::{bt_hci_duration, BleHostError, Error, Identity, PacketPool, Stack};
 
 /// Security level of a connection
@@ -271,6 +271,11 @@ impl<'stack, P: PacketPool> Connection<'stack, P> {
         self.manager.next_gatt(self.index).await
     }
 
+    #[cfg(feature = "gatt")]
+    pub(crate) async fn next_gatt_client(&self) -> Pdu<P::Packet> {
+        self.manager.next_gatt_client(self.index).await
+    }
+
     /// Check if still connected
     pub fn is_connected(&self) -> bool {
         self.manager.is_connected(self.index)
@@ -480,8 +485,8 @@ impl<'stack, P: PacketPool> Connection<'stack, P> {
             }
         }
 
-        #[cfg(feature = "connection-params-update")]
-        {
+        if self.role() == LeConnRole::Peripheral || cfg!(feature = "connection-params-update") {
+            use crate::types::l2cap::ConnParamUpdateReq;
             // Use L2CAP signaling to update connection parameters
             info!(
                 "Connection parameters request procedure not supported, use l2cap connection parameter update req instead"
