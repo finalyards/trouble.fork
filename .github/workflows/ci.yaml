@@ -24,13 +24,16 @@ jobs:
       #
       #   TIMING of 'rm -rf':
       #     - should be ~10s
-      #     - CAN BE EVEN >5m - which makes no further sense. Let's only remove areas where it happens fast!!!
+      #     - IS NOT, and VARIES HUGELY BY THE RUNS (see below). For this reason, it makes sense to a) not clean anything,
+      #       unless one really runs out of disk space (better to look into cache use, for example), b) clean only the
+      #       lightest folders, which cause least delay to wipe.
+      #     - THE CLEANUP CAN TAKE >5m - which makes no further sense.
       #
       #   path                    size    files     du -h times   clean times
       #   ----                    ----    -------   -----------   -----------
-      #   /usr/local/lib/android  9.8G    247_009         3m19s
-      #   /usr/share/dotnet       3.4G     34_850           25s
-      #   /opt/hosted*cache/CodeQL 1.6G    38_472           21s
+      #   /usr/share/dotnet       3.4G     34_850           25s            6s, 20s, 23s
+      #   /usr/local/lib/android  9.8G    247_009         3m19s           39s, 2m55s, 2m54s
+      #   /opt/hosted*cache/CodeQL 1.6G    38_472           21s            4s, 19s, 20s
       #   /opt/ghc                no such (Haskell compiler)
       #   Docker images           none
       #
@@ -45,19 +48,13 @@ jobs:
       #|    find /opt/hostedtoolcache/CodeQL -print | wc -l
       #|- run: docker image list   # (empty)
 
-      #|- name: More space, please..
-      #|  run: |
-      #|    sudo rm -rf /usr/share/dotnet
-      #|    sudo rm -rf /usr/local/lib/android
-      #|    sudo rm -rf /opt/hostedtoolcache/CodeQL
-      - run: |
+      - name: More space, please..
+        if: false
+        run: |
           sudo rm -rf /usr/share/dotnet
-      - run: |
-          sudo rm -rf /usr/local/lib/android
-      - run: |
           sudo rm -rf /opt/hostedtoolcache/CodeQL
-      - run: |
-          false
+        #
+        #sudo rm -rf /usr/local/lib/android   # takes too long
 
       - run: df -h  # 37GB
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
