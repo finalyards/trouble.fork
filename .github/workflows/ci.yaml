@@ -26,30 +26,39 @@ jobs:
       #     - should be ~10s
       #     - CAN BE EVEN >5m - which makes no further sense. Let's only remove areas where it happens fast!!!
       #
-      #   /usr/share/dotnet       3.4G
-      #   /usr/local/lib/android  9.8GB
+      #   path                    size    files     du -h times   clean times
+      #   ----                    ----    -------   -----------   -----------
+      #   /usr/local/lib/android  9.8G    247_009         3m19s
+      #   /usr/share/dotnet       3.4G     34_850           25s
+      #   /opt/hosted*cache/CodeQL 1.6G    38_472           21s
       #   /opt/ghc                no such (Haskell compiler)
-      #   /opt/hosted*cache/CodeQL 1.6GB
-      #   - no Docker images
+      #   Docker images           none
       #
+      #|- run: |
+      #|    du -h -d 1 /usr/share/dotnet
+      #|    find /usr/share/dotnet -print | wc -l
+      #|- run: |
+      #|    du -h -d 1 /usr/local/lib/android
+      #|    find /usr/local/lib/android -print | wc -l
+      #|- run: |
+      #|    du -h -d 1 /opt/hostedtoolcache/CodeQL
+      #|    find /opt/hostedtoolcache/CodeQL -print | wc -l
+      #|- run: docker image list   # (empty)
+
+      #|- name: More space, please..
+      #|  run: |
+      #|    sudo rm -rf /usr/share/dotnet
+      #|    sudo rm -rf /usr/local/lib/android
+      #|    sudo rm -rf /opt/hostedtoolcache/CodeQL
       - run: |
-          du -h -d 1 /usr/share/dotnet
-          find /usr/share/dotnet -print | wc -l
+          sudo rm -rf /usr/share/dotnet
       - run: |
-          du -h -d 1 /usr/local/lib/android
-          find /usr/local/lib/android -print | wc -l
+          sudo rm -rf /usr/local/lib/android
       - run: |
-          du -h -d 1 /opt/hostedtoolcache/CodeQL
-          find /opt/hostedtoolcache/CodeQL -print | wc -l
-      #- run: docker image list   # (empty)
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
       - run: |
           false
 
-      - name: More space, please..
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /usr/local/lib/android
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
       - run: df -h  # 37GB
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
