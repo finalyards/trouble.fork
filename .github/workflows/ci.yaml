@@ -7,25 +7,24 @@ on:
     tags:
       - "v*"
   pull_request:
-
-  # Allow manual run (for DEBUG in a fork):
-  workflow_dispatch:
+  workflow_dispatch:  # needed to be in 'main', for any branch to have 'Run Workflow' available, in the GitHub UI.
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: df -h
-      # Clear more disk space (38GB free), kudos to https://carlosbecker.com/posts/github-actions-disk-space/
-      - name: "node-cleanup"
+      - run: df -h  # 23G available
+      # Free some disk space, kudos to https://carlosbecker.com/posts/github-actions-disk-space/
+      #   Note: says "Total reclaimed space: 0B", but there's still cleared space.
+      - name: "More space, please"
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
           sudo docker image prune --all --force
           sudo docker builder prune -a
-      - run: df -h
-      - run: "false"  # stop here
+      - run: df -h  # 37GB available
 
+      # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
       #  run: |
       #    sudo apt-get update
@@ -43,15 +42,14 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
-      - name: Disk space before CI
-        run: |
-          false # todo
+      #R- name: Show cache sizes and contents (you...)  #delme
+
       - name: CI
         run: |
           ./ci.sh
       - name: Disk space remaining (margin)
-        run: |
-          false # todo
+        run: df -h
+
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   binary-size:
     runs-on: ubuntu-latest
