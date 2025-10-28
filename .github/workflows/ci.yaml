@@ -8,6 +8,9 @@ on:
       - "v*"
   pull_request:
 
+  # Allow manual run (for DEBUG in a fork):
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
