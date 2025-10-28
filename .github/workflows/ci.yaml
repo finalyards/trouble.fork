@@ -23,20 +23,18 @@ jobs:
       #     - freeing Android images (9.8GB) doesn't! 👍
       #
       #   TIMING of 'rm -rf':
-      #     - should ...tbd.
+      #     - should be ~10s; varies by the folder contents!
       #
-      #   NOTE: This can take "5m 8s", so not necessarily worth it!!!
-      #       >>  sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      #   /usr/share/dotnet       3.4G
+      #   /usr/local/lib/android  9.8GB
+      #   /opt/ghc                no such (Haskell compiler)
+      #   /opt/hostedtoolcache/CodeQL 1.6GB
+      #   - no Docker images
       #
-      #     /usr/share/dotnet   3.4G
-      #     there is no '/opt/ghc' (Haskell compiler); Oct'25
-      #
-      - name: See the depth
-        run: |
-          du -h -d 1 /usr/local/lib/android
-          du -h -d 1 /opt/hostedtoolcache/CodeQL
-          which docker
-          docker image list
+      #|- run: du -h -d 1 /usr/share/dotnet
+      #|- run: du -h -d 1 /usr/local/lib/android
+      #|- run: du -h -d 1 /opt/hostedtoolcache/CodeQL
+      #|- run: docker image list
       - name: More space, please..
         run: |
           sudo rm -rf /usr/share/dotnet
@@ -58,7 +56,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target_ci/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
       - name: CI
@@ -71,6 +69,7 @@ jobs:
       #   - first run: 2213MB pushed
 
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
+  #   ..but also very much reproducible from: https://github.com/marketplace/actions/bloaty-action
   binary-size:
     needs: build        # run only if 'build' succeeds
     runs-on: ubuntu-latest
@@ -80,7 +79,7 @@ jobs:
     steps:
       - uses: dtolnay/rust-toolchain@nightly
       - uses: actions/cache@v4
-        id: cache-cargo
+        id: cache-bloaty
         with:
           path: |
             ~/.cargo/bin/
@@ -88,11 +87,11 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ./examples/nrf52/target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-bloaty-${{ hashFiles('host*/Cargo.lock', 'examples/nrf52/Cargo.lock', 'examples/apps/Cargo.lock') }}
 
       - run: rustup target add thumbv7em-none-eabihf
       - run: rustup component add rust-src llvm-tools
-      - if: steps.cache-cargo.outputs.cache-hit != 'true'
+      - if: steps.cache-bloaty.outputs.cache-hit != 'true'
         run: cargo install cargo-binutils
 
       - name: Check out the repo with the full git history
