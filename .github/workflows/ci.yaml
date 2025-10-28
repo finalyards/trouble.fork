@@ -18,9 +18,23 @@ jobs:
       # Free some disk space, kudos to https://carlosbecker.com/posts/github-actions-disk-space/
       #   Note: says "Total reclaimed space: 0B", but there's still cleared space.
       #   TIMING: should be ~24s
+      #
+      #   NOTE: This can take "5m 8s", so not necessarily worth it!!!
+      #   >>          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      #
+      - name: See the depth
+        run: |
+          du -h -d 1 /usr/share/dotnet
+          du -h -d 1 /usr/local/lib/android
+          du -h -d 1 /opt/ghc
+          du -h -d 1 /opt/hostedtoolcache/CodeQL
+          false
       - name: More space, please..
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
       - run: df -h  # 37GB
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
@@ -47,7 +61,7 @@ jobs:
         run: df -h  # 26GB (first run; no cache)
 
       # Post Set up cargo cache:
-      #   - pushing 2.16GB to cache (first run; no previous cache)
+      #   - first run: 2213MB pushed
 
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   binary-size:
