@@ -34,7 +34,7 @@ cargo batch \
     --- check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52840,security \
     --- check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52833 --artifact-dir tests/nrf52 \
     --- check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52832 \
-    --- check --release --manifest-path examples/esp32/Cargo.toml --features esp32c3 --target riscv32imc-unknown-none-elf --artifact-dir tests/esp32 \
+    --- check --release --manifest-path examples/esp32/Cargo.toml --target riscv32imc-unknown-none-elf --features esp32c3 --artifact-dir tests/esp32 \
     --- check --release --manifest-path examples/serial-hci/Cargo.toml \
     --- check --release --manifest-path examples/linux/Cargo.toml \
     --- check --release --manifest-path examples/linux/Cargo.toml --features security \

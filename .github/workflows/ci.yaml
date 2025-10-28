@@ -13,10 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add dependencies
+      - run: df -h
+      # Clear more disk space (38GB free), kudos to https://carlosbecker.com/posts/github-actions-disk-space/
+      - name: "node-cleanup"
         run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends libudev-dev
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          sudo docker builder prune -a
+      - run: df -h
+      - run: "false"  # stop here
+
+      #- name: Add dependencies
+      #  run: |
+      #    sudo apt-get update
+      #    sudo apt-get install --no-install-recommends libudev-dev
       - name: Set up cargo cache
         uses: actions/cache@v3
         continue-on-error: true
@@ -30,12 +40,19 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
+      - name: Disk space before CI
+        run: |
+          false # todo
       - name: CI
         run: |
           ./ci.sh
+      - name: Disk space remaining (margin)
+        run: |
+          false # todo
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   binary-size:
     runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'success' }}
     permissions:
       actions: read
       pull-requests: write

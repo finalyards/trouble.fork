@@ -1,4 +1,4 @@
-name: Trouble Host Release 
+name: Trouble Host Release
 
 on:
   push:
@@ -7,17 +7,17 @@ on:
 
 permissions:
   contents: write
-  
+
 jobs:
   # Re Run the Checks
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends libudev-dev
+      #- name: Add dependencies
+      #  run: |
+      #    sudo apt-get update
+      #    sudo apt-get install --no-install-recommends libudev-dev
       - name: Set up cargo cache
         uses: actions/cache@v3
         continue-on-error: true
@@ -65,7 +65,7 @@ jobs:
       run: |
         cd host
         cargo build --release
-    
+
     - name: Create GitHub release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
