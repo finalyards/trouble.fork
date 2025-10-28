@@ -13,24 +13,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: df -h  # 23G available
       # Free some disk space, kudos to https://carlosbecker.com/posts/github-actions-disk-space/
       #   Note: says "Total reclaimed space: 0B", but there's still cleared space.
       #   TIMING: should be ~24s
-      - name: More space, please
+      - name: More space, please..
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-          #sudo docker image prune --all --force
-          #sudo docker builder prune -a
-      - run: df -h  # 37GB available
+      - run: df -h  # 37GB
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
       #  run: |
       #    sudo apt-get update
       #    sudo apt-get install --no-install-recommends libudev-dev
       - name: Set up cargo cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         continue-on-error: true
         with:
           path: |
@@ -42,13 +40,14 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-
 
-      #R- name: Show cache sizes and contents (you...)  #delme
-
       - name: CI
         run: |
           ./ci.sh
       - name: Disk space remaining (margin)
-        run: df -h
+        run: df -h  # 26GB (first run; no cache)
+
+      # Post Set up cargo cache:
+      #   - pushing 2.16GB to cache (first run; no previous cache)
 
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   binary-size:
@@ -59,7 +58,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: dtolnay/rust-toolchain@nightly
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cache-cargo
         with:
           path: |
@@ -106,7 +105,7 @@ jobs:
       - name: Add a PR comment with the bloaty diff
         if: ${{ github.event.pull_request }}
         continue-on-error: true
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.issues.createComment({
