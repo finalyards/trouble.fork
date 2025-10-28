@@ -23,18 +23,28 @@ jobs:
       #     - freeing Android images (9.8GB) doesn't! 👍
       #
       #   TIMING of 'rm -rf':
-      #     - should be ~10s; varies by the folder contents!
+      #     - should be ~10s
+      #     - CAN BE EVEN >5m - which makes no further sense. Let's only remove areas where it happens fast!!!
       #
       #   /usr/share/dotnet       3.4G
       #   /usr/local/lib/android  9.8GB
       #   /opt/ghc                no such (Haskell compiler)
-      #   /opt/hostedtoolcache/CodeQL 1.6GB
+      #   /opt/hosted*cache/CodeQL 1.6GB
       #   - no Docker images
       #
-      #|- run: du -h -d 1 /usr/share/dotnet
-      #|- run: du -h -d 1 /usr/local/lib/android
-      #|- run: du -h -d 1 /opt/hostedtoolcache/CodeQL
-      #|- run: docker image list
+      - run: |
+          du -h -d 1 /usr/share/dotnet
+          find /usr/share/dotnet -print | wc -l
+      - run: |
+          du -h -d 1 /usr/local/lib/android
+          find /usr/local/lib/android -print | wc -l
+      - run: |
+          du -h -d 1 /opt/hostedtoolcache/CodeQL
+          find /opt/hostedtoolcache/CodeQL -print | wc -l
+      #- run: docker image list   # (empty)
+      - run: |
+          false
+
       - name: More space, please..
         run: |
           sudo rm -rf /usr/share/dotnet
