@@ -73,13 +73,25 @@ jobs:
             ~/.cargo/git/db/
             target_ci/
           key: ${{ runner.os }}-build-${{ hashFiles('**/Cargo.lock') }}
-          restore-keys: ${{ runner.os }}-cargo-
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-cargo-
 
       - name: CI
         run: |
           ./ci.sh
       - name: Disk space remaining (margin)
-        run: df -h  # 26GB (first run; no cache)
+        run: df -h  # 26GB (first run; no cache; started with 37GB)
+                    # 11GB (cached run; started with 26GB)
+
+      - name: Show cache contents
+        run: |
+          du -h -d 1 ~/.cargo/bin/
+          du -h -d 1 ~/.cargo/registry/index/
+          du -h -d 1 ~/.cargo/registry/cache/
+          du -h -d 1 ~/.cargo/git/db/
+          du -h -d 1 target_ci/
+      - run: "false"
 
       # Post Set up cargo cache:
       #   - first run: 2213MB pushed
@@ -104,6 +116,9 @@ jobs:
             ~/.cargo/git/db/
             ./examples/nrf52/target/
           key: ${{ runner.os }}-bloaty-${{ hashFiles('host*/Cargo.lock', 'examples/nrf52/Cargo.lock', 'examples/apps/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bloaty-
+            ${{ runner.os }}-build-
 
       - run: rustup target add thumbv7em-none-eabihf
       - run: rustup component add rust-src llvm-tools
