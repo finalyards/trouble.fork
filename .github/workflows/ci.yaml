@@ -76,16 +76,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
             ${{ runner.os }}-cargo-
-
-      - name: List the contents of the cache
-        run: |
-          du -h ~/.cargo/bin/
-          du -h ~/.cargo/registry/index/
-          du -h ~/.cargo/registry/cache/
-          du -h ~/.cargo/git/db/
-          du -h target_ci/
-
-      - run: "false"  # TEMP
       - name: CI
         run: |
           ./ci.sh
