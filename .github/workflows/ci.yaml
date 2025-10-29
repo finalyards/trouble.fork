@@ -77,12 +77,21 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-cargo-
 
+      - name: List the contents of the cache
+        run: |
+          du -h ~/.cargo/bin/
+          du -h ~/.cargo/registry/index/
+          du -h ~/.cargo/registry/cache/
+          du -h ~/.cargo/git/db/
+          du -h target_ci/
+
+      - run: "false"  # TEMP
       - name: CI
         run: |
           ./ci.sh
       - name: Disk space remaining (margin)
-        run: df -h  # 26GB (first run; no cache; started with 37GB)
-                    # 11GB (cached run; started with 26GB)
+        run: df -h  # 26GB (first run; no cache; cleanup; started with 37GB)
+                    # 11GB (cached run; no cleanup; started with 26GB)
 
       #R- name: Show cache contents
       #R  run: |
