@@ -49,15 +49,16 @@ jobs:
       #|    find /opt/hostedtoolcache/CodeQL -print | wc -l
       #|- run: docker image list   # (empty)
 
-      - name: More space, please..
-        if: false
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/hostedtoolcache/CodeQL
-        #
-        #sudo rm -rf /usr/local/lib/android   # takes too long
-      - run: df -h  # 37GB
-        if: false
+      # DISABLED: not needed, if caches are regularly wiped, or otherwise kept to reasonable size.
+      #|- name: More space, please..
+      #|  if: false
+      #|  run: |
+      #|    sudo rm -rf /usr/share/dotnet
+      #|    sudo rm -rf /opt/hostedtoolcache/CodeQL
+      #|  #
+      #|  #sudo rm -rf /usr/local/lib/android   # takes too long
+      #|- run: df -h  # 37GB
+      #|  if: false
 
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
@@ -129,7 +130,6 @@ jobs:
           key: ${{ runner.os }}-bloaty-${{ hashFiles('host/Cargo.lock', 'host-macros/Cargo.lock', 'examples/nrf52/Cargo.lock', 'examples/apps/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-bloaty-
-            ${{ runner.os }}-build-
 
       - run: rustup target add thumbv7em-none-eabihf
       - run: rustup component add rust-src llvm-tools
