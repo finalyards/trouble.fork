@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  # disabled, just for the study (put back for main repo!) TEMP!!
   push:
-    #|branches:
-    #|  - main
+    branches:
+      - main
     tags:
       - "v*"
   pull_request:
