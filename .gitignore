@@ -1,7 +1,22 @@
 **/target
-**/target_ci
+
+# When to keep Cargo.lock's:
+#   - so that CI runs are _reproducible_, fully locked to the versions stored!!!
+#   - any lock not needed by CI should not be in version control
+#
 Cargo.lock
-.idea
+!/benchmarks/*/Cargo.lock
+#/bt-hci-linux/Cargo.lock
+  # a library, no lock
+!/examples/*/Cargo.lock
+/examples/apps/Cargo.lock
+  # a libary, no lock
+!/host/Cargo.lock
+  # library and tests, lock
 
 # Created if one runs 'ci.sh' locally
+/target_ci/
 /tests/
+
+# NOTE: This should rather be in a developer's global .gitignore - kept because it was so.
+.idea/
