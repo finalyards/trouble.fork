@@ -47,6 +47,8 @@ cargo batch \
 set -x
 cargo fmt --check --manifest-path ./host/Cargo.toml
 cargo clippy --manifest-path ./host/Cargo.toml --features gatt,peripheral,central
-cargo test --manifest-path ./host/Cargo.toml --lib -- --nocapture
-cargo test --manifest-path ./host/Cargo.toml --no-run -- --nocapture
-cargo test --manifest-path ./examples/tests/Cargo.toml --no-run -- --nocapture
+cargo test --release --manifest-path ./host/Cargo.toml --lib -- --nocapture
+cargo test --release --manifest-path ./host/Cargo.toml --no-run -- --nocapture
+cargo test --release --manifest-path ./examples/tests/Cargo.toml --no-run -- --nocapture
+  #
+  # by running also tests '--release', we better utilize the cache (down by ___GB), saving run time in the process (___ m,s)
