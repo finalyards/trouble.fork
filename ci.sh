@@ -43,12 +43,17 @@ cargo batch \
     --- check --release --manifest-path examples/rp-pico-w/Cargo.toml --target thumbv6m-none-eabi --features skip-cyw43-firmware \
     --- check --release --manifest-path examples/rp-pico-2-w/Cargo.toml --target thumbv8m.main-none-eabihf --features skip-cyw43-firmware
 #    --- check --release --manifest-path examples/apache-nimble/Cargo.toml --target thumbv7em-none-eabihf
+    #
+    # NOTE! Later 'cargo' can do 'check --locked' but 'cargo-batch' doesn't allow it!
+    #       >> error: unexpected argument '--locked' found
+    #
+    #     This might be one reason to move from 'cargo-batch' to regular, line-wise 'cargo'.
 
 set -x
 cargo fmt --check --manifest-path ./host/Cargo.toml
 cargo clippy --manifest-path ./host/Cargo.toml --features gatt,peripheral,central
-cargo test --release --manifest-path ./host/Cargo.toml --lib -- --nocapture
-cargo test --release --manifest-path ./host/Cargo.toml --no-run -- --nocapture
-cargo test --release --manifest-path ./examples/tests/Cargo.toml --no-run -- --nocapture
+cargo test --release --locked --manifest-path ./host/Cargo.toml --lib -- --nocapture
+cargo test --release --locked --manifest-path ./host/Cargo.toml --no-run -- --nocapture
+cargo test --release --locked --manifest-path ./examples/tests/Cargo.toml --no-run -- --nocapture
   #
   # by running also tests '--release', we better utilize the cache (down by ___GB), saving run time in the process (___ m,s)

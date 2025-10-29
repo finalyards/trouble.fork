@@ -1,9 +1,10 @@
 name: CI
 
 on:
+  # disabled, just for the study (put back for main repo!) TEMP!!
   push:
-    branches:
-      - main
+    #|branches:
+    #|  - main
     tags:
       - "v*"
   pull_request:
@@ -55,8 +56,9 @@ jobs:
           sudo rm -rf /opt/hostedtoolcache/CodeQL
         #
         #sudo rm -rf /usr/local/lib/android   # takes too long
-
       - run: df -h  # 37GB
+        if: false
+
       # kept as a template; nothing needs the 'libudev-dev' (Oct'25)
       #- name: Add dependencies
       #  run: |
@@ -76,9 +78,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-build-
             ${{ runner.os }}-cargo-
+
+      # We WISH all 'ci.sh' output are 'release', not 'debug'. Historically, this has not been the case: the tests
+      # created 1.9GB of their own 'target_ci/debug'. If that exists in the cache, remove it.
+      - name: Remove 'target_ci/debug' from the cached set
+        run: |
+          rm -rf target_ci/debug/
+
       - name: CI
         run: |
           ./ci.sh
+          test ! -d target_ci/debug || (echo >&2 "Seems 'target_ci/debug' got created:"; du -h -d 1 target_ci/debug)
+
       - name: Disk space remaining (margin)
         run: df -h  # 26GB (first run; no cache; cleanup; started with 37GB)
                     # 11GB (cached run; no cleanup; started with 26GB)
