@@ -82,8 +82,13 @@ jobs:
       # We WISH all 'ci.sh' output are 'release', not 'debug'. Historically, this has not been the case: the tests
       # created 1.9GB of their own 'target_ci/debug'. If that exists in the cache, remove it.
       - name: Remove 'target_ci/debug' from the cached set
+        if: false
         run: |
           rm -rf target_ci/debug/
+      - name: Remove 'target_ci/' so we see how much is placed there.
+        if: true
+        run: |
+          rm -rf target_ci/* target_ci/.*
 
       - name: CI
         run: |
