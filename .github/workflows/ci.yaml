@@ -84,6 +84,10 @@ jobs:
       - name: Remove 'target_ci/debug' from the cached set
         run: |
           rm -rf target_ci/debug/
+      - name: Remove 'target_ci/' so we see how much is placed there. #DEBUG
+        if: true
+        run: |
+          rm -rf target_ci/* target_ci/.*
 
       - name: CI
         run: |
