@@ -94,13 +94,13 @@ jobs:
         run: df -h  # 26GB (first run; no cache; cleanup; started with 37GB)
                     # 11GB (cached run; no cleanup; started with 26GB)
 
-      #R- name: Show cache contents
-      #R  run: |
-      #R    du -h -d 1 ~/.cargo/bin/              # 48M
-      #R    du -h -d 1 ~/.cargo/registry/index/   # 24M
-      #R    du -h -d 1 ~/.cargo/registry/cache/   # 69M
-      #R    du -h -d 1 ~/.cargo/git/db/           # 162M
-      #R    du -h -d 1 target_ci/                 # 7.9GB  <-- but who's doing 1.9G worth of "target_ci/debug"??
+      - name: Show renewed cache contents
+        run: |
+          du -h -d 1 ~/.cargo/bin/              # 48M
+          du -h -d 1 ~/.cargo/registry/index/   # 24M
+          du -h -d 1 ~/.cargo/registry/cache/   # 69M
+          du -h -d 1 ~/.cargo/git/db/           # 162M
+          du -h -d 2 target_ci/                 # 7.9GB  <-- but who's doing 1.9G worth of "target_ci/debug"??
 
       # Post Set up cargo cache:
       #   - first run: 2213MB pushed
@@ -110,6 +110,7 @@ jobs:
   #   ..but also very much reproducible from: https://github.com/marketplace/actions/bloaty-action
   binary-size:
     needs: build        # run only if 'build' succeeds
+    if: false           # TEMP; not in our interest
     runs-on: ubuntu-latest
     permissions:
       actions: read
