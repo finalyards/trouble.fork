@@ -31,9 +31,9 @@ cargo check --release --manifest-path host/Cargo.toml --no-default-features --fe
 cargo check --release --manifest-path bt-hci-linux/Cargo.toml
 cargo check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52840
 cargo check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52840,security
-cargo check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52833 --artifact-dir tests/nrf52
+cargo check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52833
 cargo check --release --manifest-path examples/nrf52/Cargo.toml --target thumbv7em-none-eabihf --features nrf52832
-cargo check --release --manifest-path examples/esp32/Cargo.toml --target riscv32imc-unknown-none-elf --features esp32c3 --artifact-dir tests/esp32
+cargo check --release --manifest-path examples/esp32/Cargo.toml --target riscv32imc-unknown-none-elf --features esp32c3
 cargo check --release --manifest-path examples/serial-hci/Cargo.toml
 cargo check --release --manifest-path examples/linux/Cargo.toml
 cargo check --release --manifest-path examples/linux/Cargo.toml --features security
