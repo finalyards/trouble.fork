@@ -12,7 +12,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: false   # TEMP!
     steps:
       - uses: actions/checkout@v5
       - run: df -h  # 23G available
@@ -116,7 +115,7 @@ jobs:
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   #   ..but also very much reproducible from: https://github.com/marketplace/actions/bloaty-action
   binary-size:
-    #! needs: build        # run only if 'build' succeeds
+    needs: build        # run only if 'build' succeeds
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -136,6 +135,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bloaty-
 
+      - run: "false" # STOP
       - run: rustup target add thumbv7em-none-eabihf
       - run: rustup component add rust-src llvm-tools
       - if: steps.cache-bloaty.outputs.cache-hit != 'true'
