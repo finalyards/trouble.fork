@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: false   # TEMP!
     steps:
       - uses: actions/checkout@v5
       - run: df -h  # 23G available
@@ -115,8 +116,7 @@ jobs:
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   #   ..but also very much reproducible from: https://github.com/marketplace/actions/bloaty-action
   binary-size:
-    needs: build        # run only if 'build' succeeds
-    if: false           # TEMP; not in our interest
+    #! needs: build        # run only if 'build' succeeds
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -132,7 +132,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ./examples/nrf52/target/
-          key: ${{ runner.os }}-bloaty-${{ hashFiles('host/Cargo.lock', 'host-macros/Cargo.lock', 'examples/nrf52/Cargo.lock', 'examples/apps/Cargo.lock') }}
+          key: ${{ runner.os }}-bloaty-${{ hashFiles('host/Cargo.lock', 'examples/nrf52/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-bloaty-
 
