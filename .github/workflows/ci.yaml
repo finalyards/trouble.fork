@@ -131,7 +131,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             ./examples/nrf52/target/
-          key: ${{ runner.os }}-bloaty-${{ hashFiles('host/Cargo.lock', 'host-macros/Cargo.lock', 'examples/nrf52/Cargo.lock', 'examples/apps/Cargo.lock') }}
+          key: ${{ runner.os }}-bloaty-${{ hashFiles('host/Cargo.lock', 'examples/nrf52/Cargo.lock') }}
           restore-keys: |
             ${{ runner.os }}-bloaty-
 
