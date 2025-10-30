@@ -12,6 +12,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: false # TESTING!!
     steps:
       - uses: actions/checkout@v5
       - run: df -h  # 23G available
@@ -83,11 +84,11 @@ jobs:
       # created 1.9GB of their own 'target_ci/debug'. If that exists in the cache, remove it.
       - name: Remove 'target_ci/debug' from the cached set
         run: |
-          rm -rf target_ci/debug/
-      - name: Remove 'target_ci/' so we see how much is placed there. #DEBUG
-        if: true
-        run: |
-          rm -rf target_ci/* target_ci/.*
+          rm -rf target_ci/debug
+      #|- name: Remove 'target_ci/' so we see how much is placed there. #DEBUG
+      #|  if: true
+      #|  run: |
+      #|    rm -rf target_ci/* target_ci/.*
 
       - name: CI
         run: |
@@ -104,7 +105,7 @@ jobs:
           du -h -d 1 ~/.cargo/registry/index/   # 24M
           du -h -d 1 ~/.cargo/registry/cache/   # 69M
           du -h -d 1 ~/.cargo/git/db/           # 162M
-          du -h -d 2 target_ci/                 # 7.9GB  <-- but who's doing 1.9G worth of "target_ci/debug"??
+          du -h -d 2 target_ci/                 # 7.9GB
 
       # Post Set up cargo cache:
       #   - first run: 2213MB pushed
@@ -113,15 +114,21 @@ jobs:
   # Check binary-size, stolen from https://github.com/tweedegolf/sequential-storage/blob/master/.github/workflows/ci.yaml
   #   ..but also very much reproducible from: https://github.com/marketplace/actions/bloaty-action
   binary-size:
-    needs: build        # run only if 'build' succeeds
-    if: false           # TEMP; not in our interest
+    #!TESTING needs: build        # run only if 'build' succeeds
+    #if: false           # TEMP; not in our interest
     runs-on: ubuntu-latest
     permissions:
       actions: read
       pull-requests: write
     steps:
+      - name: Check out the repo with the full git history
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: '0'
+
       - uses: dtolnay/rust-toolchain@nightly
       - uses: actions/cache@v4
+        continue-on-error: true
         id: cache-bloaty
         with:
           path: |
@@ -139,10 +146,6 @@ jobs:
       - if: steps.cache-bloaty.outputs.cache-hit != 'true'
         run: cargo install cargo-binutils
 
-      - name: Check out the repo with the full git history
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: '0'
       - name: Build new binary
         working-directory: ./examples/nrf52
         run: |
@@ -153,6 +156,9 @@ jobs:
       - name: Save binary
         run: |
           mv ./examples/nrf52/target/thumbv7em-none-eabihf/release/ble_bas_peripheral ./examples/nrf52/target/thumbv7em-none-eabihf/release/original.elf
+      - name: "[PR] transitioning from 'nrf-sdc' to 'nrf52' needs this." #keep: later renames might need as well
+        if: ${{ github.event.pull_request }}
+        run: git restore examples/nrf52/Cargo.lock
       - name: If it's a PR checkout the base commit
         if: ${{ github.event.pull_request }}
         run: git checkout ${{ github.event.pull_request.base.sha }}
