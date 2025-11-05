@@ -16,22 +16,26 @@ esp-rtos = { version = "0.2.0", features = ["embassy", "esp-alloc", "esp-radio",
 trouble-example-apps = { version = "0.1.0", path = "../apps", features = ["log"] }
 trouble-host = { path = "../../host", features = ["default-packet-pool-mtu-255"] }
 
-# for 'ble_bas_peripheral_bonding'
-embassy-embedded-hal = "0.5.0"
-esp-storage = { version = "0.8.1" }
+embassy-embedded-hal = { version = "0.5.0", optional = true }
+esp-storage = { version = "0.8.1", optional = true }
 
 [features]
 default = ["esp32c3"]
 
-esp32 = ["esp-hal/esp32", "esp-backtrace/esp32", "esp-println/esp32", "esp-radio/esp32", "esp-rtos/esp32", "esp-storage/esp32", "esp-bootloader-esp-idf/esp32"]
-esp32c2 = ["esp-hal/esp32c2", "esp-backtrace/esp32c2", "esp-println/esp32c2", "esp-radio/esp32c2", "esp-rtos/esp32c2", "esp-storage/esp32c2", "esp-bootloader-esp-idf/esp32c2"]
-esp32c3 = ["esp-hal/esp32c3", "esp-backtrace/esp32c3", "esp-println/esp32c3", "esp-radio/esp32c3", "esp-rtos/esp32c3", "esp-storage/esp32c3", "esp-bootloader-esp-idf/esp32c3"]
-esp32c6 = ["esp-hal/esp32c6", "esp-backtrace/esp32c6", "esp-println/esp32c6", "esp-radio/esp32c6", "esp-rtos/esp32c6", "esp-storage/esp32c6", "esp-bootloader-esp-idf/esp32c6"]
-esp32h2 = ["esp-hal/esp32h2", "esp-backtrace/esp32h2", "esp-println/esp32h2", "esp-radio/esp32h2", "esp-rtos/esp32h2", "esp-storage/esp32h2", "esp-bootloader-esp-idf/esp32h2"]
-esp32s3 = ["esp-hal/esp32s3", "esp-backtrace/esp32s3", "esp-println/esp32s3", "esp-radio/esp32s3", "esp-rtos/esp32s3", "esp-storage/esp32s3", "esp-bootloader-esp-idf/esp32s3"]
+esp32 = ["esp-hal/esp32", "esp-backtrace/esp32", "esp-println/esp32", "esp-radio/esp32", "esp-rtos/esp32", "esp-storage?/esp32", "esp-bootloader-esp-idf/esp32"]
+esp32c2 = ["esp-hal/esp32c2", "esp-backtrace/esp32c2", "esp-println/esp32c2", "esp-radio/esp32c2", "esp-rtos/esp32c2", "esp-storage?/esp32c2", "esp-bootloader-esp-idf/esp32c2"]
+esp32c3 = ["esp-hal/esp32c3", "esp-backtrace/esp32c3", "esp-println/esp32c3", "esp-radio/esp32c3", "esp-rtos/esp32c3", "esp-storage?/esp32c3", "esp-bootloader-esp-idf/esp32c3"]
+esp32c6 = ["esp-hal/esp32c6", "esp-backtrace/esp32c6", "esp-println/esp32c6", "esp-radio/esp32c6", "esp-rtos/esp32c6", "esp-storage?/esp32c6", "esp-bootloader-esp-idf/esp32c6"]
+esp32h2 = ["esp-hal/esp32h2", "esp-backtrace/esp32h2", "esp-println/esp32h2", "esp-radio/esp32h2", "esp-rtos/esp32h2", "esp-storage?/esp32h2", "esp-bootloader-esp-idf/esp32h2"]
+esp32s3 = ["esp-hal/esp32s3", "esp-backtrace/esp32s3", "esp-println/esp32s3", "esp-radio/esp32s3", "esp-rtos/esp32s3", "esp-storage?/esp32s3", "esp-bootloader-esp-idf/esp32s3"]
 
 security = [
     "trouble-example-apps/security",
+]
+
+storage = [
+    "embassy-embedded-hal",
+    "esp-storage"
 ]
 
 [profile.dev]
@@ -58,7 +62,7 @@ required-features = ["security"]
 
 [[bin]]
 name = "ble_bas_peripheral_bonding"
-required-features = ["security"]
+required-features = ["security", "storage"]
 
 # Enable for using latest 'main'
 #[patch.crates-io]
